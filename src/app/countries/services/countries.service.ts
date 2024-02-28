@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, catchError, of } from 'rxjs';
+import { Observable, catchError, map, of } from 'rxjs';
 import { Country } from '../interfaces/country';
 
 @Injectable({providedIn: 'root'})
@@ -8,6 +8,16 @@ export class CountriesService {
 
   private url:string='https://restcountries.com/v3.1'
   constructor(private httpClient: HttpClient) { }
+
+  serachCountryByAlphaCode(term:string):Observable<Country[] | null>{
+    const url=`${this.url}/alpha/${term}`;
+
+    return this.httpClient.get<Country[]>(url)
+      .pipe(
+        //map(countries => countries.length>0? countries[0]:null),
+        catchError(()=> of (null))
+      );
+  }
 
   serachCapital(term:string):Observable<Country[]>{
     // const params:HttpParams = new HttpParams()
